@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MyProject</string>
+    <string name="user_center">个人中心</string>
+    <string name="found">发现</string>
+    <string name="live">生活</string>
+    <string name="main">首页</string>
+</resources>
