@@ -79,7 +79,6 @@ public class MainActivity extends ActivityBase {
             } else {
                 fragmentList.add(new FragmentTwo());
             }
-
             if (mFragmentManager.findFragmentByTag(2 + "") != null) {
                 fragmentList.add(mFragmentManager.findFragmentByTag(2 + ""));
             } else {
