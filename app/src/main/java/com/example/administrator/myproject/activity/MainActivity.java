@@ -10,6 +10,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.ashokvarma.bottomnavigation.BadgeItem;
+import com.ashokvarma.bottomnavigation.BottomNavigationBar;
+import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.example.administrator.myproject.R;
 import com.example.administrator.myproject.fragment.FragmentFour;
 import com.example.administrator.myproject.fragment.FragmentOne;
@@ -26,24 +29,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ContentView(R.layout.activity_main)
-public class MainActivity extends ActivityBase {
+public class MainActivity extends ActivityBase implements BottomNavigationBar.OnTabSelectedListener {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     private static final String CURRENT_FRAGMENT = "STATE_FRAGMENT_SHOW";
 
     private Context mContext;
 
-    @ViewInject(R.id.ll_main)
-    private LinearLayout ll_main;
-
-    @ViewInject(R.id.ll_live)
-    private LinearLayout ll_live;
-
-    @ViewInject(R.id.ll_found)
-    private LinearLayout ll_found;
-
-    @ViewInject(R.id.ll_user_center)
-    private LinearLayout ll_user_center;
+    @ViewInject(R.id.bottom_navigation_bar)
+    BottomNavigationBar mBottomNavigationBar;
 
     private FragmentManager mFragmentManager;
 
@@ -99,6 +93,19 @@ public class MainActivity extends ActivityBase {
             fragmentList.add(new FragmentFour());
             showFragment();
         }
+
+        mBottomNavigationBar.setTabSelectedListener(this);
+        mBottomNavigationBar.setMode(BottomNavigationBar.MODE_FIXED);
+        mBottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
+        mBottomNavigationBar.setActiveColor(R.color.newBlue)
+                .setBarBackgroundColor(R.color.gray);
+
+        mBottomNavigationBar.addItem(new BottomNavigationItem(R.mipmap.main_normal, R.string.main))
+                .addItem(new BottomNavigationItem(R.mipmap.live_normal, R.string.live))
+                .addItem(new BottomNavigationItem(R.mipmap.found_normal, R.string.found))
+                .addItem(new BottomNavigationItem(R.mipmap.user_center_normal, R.string.user_center))
+                .setFirstSelectedPosition(0)
+                .initialise();
     }
 
     @Override
@@ -108,24 +115,6 @@ public class MainActivity extends ActivityBase {
         super.onSaveInstanceState(outState);
     }
 
-    @Event(type = View.OnClickListener.class, value = {R.id.ll_main, R.id.ll_live, R.id.ll_found, R.id.ll_user_center})
-    private void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.ll_main:
-                currentIndex = 0;
-                break;
-            case R.id.ll_live:
-                currentIndex = 1;
-                break;
-            case R.id.ll_found:
-                currentIndex = 2;
-                break;
-            case R.id.ll_user_center:
-                currentIndex = 3;
-                break;
-        }
-        showFragment();
-    }
 
     /**
      * 使用show() hide()切换页面
@@ -164,5 +153,35 @@ public class MainActivity extends ActivityBase {
         mBeginTransaction.commit();
         //把当前显示的fragment记录下来
         currentFragment = fragmentList.get(currentIndex);
+    }
+
+    @Override
+    public void onTabSelected(int position) {
+        switch (position) {
+            case 0:
+                currentIndex = 0;
+                break;
+            case 1:
+                currentIndex = 1;
+                break;
+            case 2:
+                currentIndex = 2;
+                break;
+            case 3:
+                currentIndex = 3;
+                break;
+        }
+        showFragment();
+
+    }
+
+    @Override
+    public void onTabUnselected(int position) {
+
+    }
+
+    @Override
+    public void onTabReselected(int position) {
+
     }
 }
