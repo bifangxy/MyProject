@@ -9,8 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.administrator.myproject.R;
+import com.example.administrator.myproject.adapter.RollPageAdapter;
+import com.jude.rollviewpager.RollPagerView;
 
 import org.xutils.view.annotation.ContentView;
+import org.xutils.view.annotation.ViewInject;
 import org.xutils.x;
 
 /**
@@ -22,16 +25,22 @@ public class FragmentOne extends FragmentBase {
 
     private Context mContext;
 
-    private View view;
+    private int[] images;
 
-    @Nullable
+    @ViewInject(R.id.roll_page_view)
+    RollPagerView rollPagerView;
+
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return x.view().inject(this, inflater, container);
+    public void onStart() {
+        initData();
+        super.onStart();
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+
+    private void initData() {
+        images = new int[]{
+                R.mipmap.index_one, R.mipmap.index_two, R.mipmap.index_three, R.mipmap.index_four
+        };
+        rollPagerView.setAdapter(new RollPageAdapter(rollPagerView, images));
     }
 }
