@@ -25,12 +25,17 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -69,6 +74,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView iv_a2_state;
 
 
+    private LineChart mChart_one;
+
+    private LineChart mChart_two;
+
     private BluetoothAdapter bt_adapter;
 
     private boolean isDiscovering;
@@ -83,15 +92,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private BluetoothSocket bluetoothSocket;
 
-    private List<Integer> s1_list;
+    private ArrayList<Entry> s1_list;
 
-    private List<Integer> s2_list;
+    private ArrayList<Entry> s2_list;
 
-    private List<Integer> s3_list;
+    private ArrayList<Entry> s3_list;
 
-    private List<Integer> a1_list;
+    private ArrayList<Entry> a1_list;
 
-    private List<Integer> a2_list;
+    private ArrayList<Entry> a2_list;
+
+    //    private byte[] test_data = {0x2F, 0xFF, 0x37, 0xEF, 0x40, 0x01, 0x0F, 0xFF, 0x1F, 0xFF, 0x2F, 0xFF, 0x37, 0xEF, 0x40, 0x01, 0x8F, 0xA0, 0x9F, 0xA0, 0xAF, 0xA0, 0xBF, 0xA0, 0xC0, 0x00, 0xB1, 0xCC, 0x33, 0xC3, 0x3C, 0xAA, 0x00, 0x28, 0x0F, 0xFF, 0x1F, 0xFF, 0x2F, 0xFF, 0x37, 0xEE, 0x40, 0x01, 0x0F, 0xFF, 0x1F, 0xFF, 0x2F, 0xFF, 0x37, 0xED, 0x40, 0x01, 0x0F, 0xFF, 0x1F, 0xFF, 0x2F, 0xFF, 0x37, 0xEF, 0x40, 0x01, 0x8F, 0xA0, 0x9F, 0xA0, 0xAF, 0xA0, 0xBF, 0xA0, 0xC0, 0x00, 0xB2, 0xCC, 0x33, 0xC3, 0x3C, 0xAA, 0x00, 0x28, 0x0F, 0xFF, 0x1F, 0xFF, 0x2F, 0xFF, 0x37, 0xEE, 0x40, 0x01, 0x0F, 0xFF, 0x1F, 0xFF, 0x2F, 0xFF, 0x37, 0xED, 0x40, 0x01, 0x0F, 0xFF, 0x1F, 0xFF, 0x2F, 0xFF, 0x37, 0xEE, 0x40, 0x01, 0x8F, 0xA0, 0x9F, 0xA0, 0xAF, 0xA0, 0xBF, 0xA0, 0xC0, 0x00, 0xB3, 0xCC, 0x33, 0xC3, 0x3C, 0xAA, 0x00, 0x28, 0x0F, 0xFF, 0x1F, 0xFF, 0x2F, 0xFF, 0x37EE, 0x4001, 0x0FFF, 0x1FFF, 0x2FFF, 0x37EF4001, 0x0FFF, 0x1FFF, 0x2FFF, 0x37EF4001, 0x8FA0, 0x9FA0, 0xAFA0, 0xBFA0, 0xC0,0x00, 0xB0,0xCC, 0x33,0xC3, 0x3C,0xAA, 0x0028, 0x0FFF, 0x1FFF, 0x2FFF, 0x37EF4001, 0x0FFF, 0x1FFF, 0x2FFF, 0x37EE, 0x4001, 0x0FFF, 0x1FFF, 0x2FFF, 0x37EE, 0x4001, 0x8FA0, 0x9FA0, 0xAFA0, 0xBFA0, 0xC000, 0xB1CC, 0x33C3, 0x3CAA, 0x0028, 0x0FFF, 0x1FFF, 0x2FFF, 0x37EF4001, 0x0FFF, 0x1FFF, 0x2FFF, 0x37EF4001, 0x0FFF, 0x1FFF, 0x2FFF, 0x37F0, 0x4001, 0x8FA0, 0x9FA0, 0xAFA0, 0xBFA0, 0xC000, 0xAECC, 0x33C3, 0x3CAA, 0x0028, 0x0FFF, 0x1FFF, 0x2FFF, 0x37F0, 0x4001, 0x0FFF, 0x1FFF};
+    private byte[] test_data = {
+            0x3C, (byte) 0xAA, 0x00, 0x28, 0x0F, (byte) 0xFF, 0x1F, (byte) 0xFF, 0x2F, (byte) 0xFF, 0x37, (byte) 0xEE, 0x40, 0x01, 0x0F, (byte) 0xFF, 0x1F, (byte) 0xFF, 0x2F, (byte) 0xFF, 0x37, (byte) 0xED, 0x40, 0x01, 0x0F, (byte) 0xFF, 0x1F, (byte) 0xFF, 0x2F, (byte) 0xFF, 0x37, (byte) 0xEF, 0x40, 0x01, (byte) 0x8F, (byte) 0xA0, (byte) 0x9F, (byte) 0xA0, (byte) 0xAF, (byte) 0xA0, (byte) 0xBF, (byte) 0xA0, (byte) 0xC0, 0x00, (byte) 0xB2, (byte) 0xCC, 0x33, (byte) 0xC3, 0x3C, (byte) 0xAA, 0x00, 0x28, 0x0F, (byte) 0xFF, 0x1F, (byte) 0xFF, 0x2F, (byte) 0xFF, 0x37, (byte) 0xEE, 0x40, 0x01, 0x0F, (byte) 0xFF, 0x1F, (byte) 0xFF, 0x2F, (byte) 0xFF, 0x37, (byte) 0xED, 0x40, 0x01, 0x0F, (byte) 0xFF, 0x1F, (byte) 0xFF, 0x2F, (byte) 0xFF, 0x37, (byte) 0xEE, 0x40, 0x01, (byte) 0x8F, (byte) 0xA0, (byte) 0x9F, (byte) 0xA0, (byte) 0xAF, (byte) 0xA0, (byte) 0xBF, (byte) 0xA0, (byte) 0xC0, 0x00, (byte) 0xB3, (byte) 0xCC, 0x33, (byte) 0xC3, 0x3C, (byte) 0xAA
+    };
+
 
     private Handler mHandler = new Handler() {
         @Override
@@ -112,7 +127,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d(LOG_TAG, "------onCreate--------");
         mContext = this;
         initView();
         initData();
@@ -142,6 +156,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         iv_a1_state = (ImageView) findViewById(R.id.iv_a1_state);
         iv_a2_state = (ImageView) findViewById(R.id.iv_a2_state);
 
+        mChart_one = (LineChart) findViewById(R.id.line_chart_one);
+        mChart_two = (LineChart) findViewById(R.id.line_chart_two);
+
 
     }
 
@@ -159,11 +176,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_device.setAdapter(adapter);
 
+        for (int i = 0; i < 50; i++) {
+            Random random = new Random();
+            int s = random.nextInt(100) % (100 + 1);
+            Entry entry = new Entry(i, s);
+            s1_list.add(entry);
+        }
+        for (int i = 0; i < 50; i++) {
+            Random random = new Random();
+            int s = random.nextInt(100) % (100 + 1);
+            Entry entry = new Entry(i, s);
+            s2_list.add(entry);
+        }
+        for (int i = 0; i < 50; i++) {
+            Random random = new Random();
+            int s = random.nextInt(100) % (100 + 1);
+            Entry entry = new Entry(i, s);
+            s3_list.add(entry);
+        }
+        LineChartManager.initDoubleLineChart(mContext, mChart_one, s1_list, s2_list, s3_list);
+
     }
 
     private void initListener() {
 
         bt_start.setOnClickListener(this);
+        bt_exit.setOnClickListener(this);
 
         spinner_device.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -175,7 +213,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Another interface callback
             }
         });
 
@@ -205,6 +242,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 break;
             case R.id.bt_exit:
+
+
+                for (int i = 0; i < test_data.length - 10; i++) {
+                    if ((test_data[i] & 0xff) == 0xAA) {
+
+                        int high = test_data[i + 1];
+
+                        int low = test_data[i + 2];
+
+                        int leng = 256 * high + low;
+
+                        byte[] values = new byte[leng + 7];
+
+                        System.arraycopy(test_data, i + 1, values, 0, leng + 7);
+
+                        int value = values[0];
+
+                        for (int j = 0; j < values.length - 6; j++) {
+                            value = value ^ values[j + 1];
+                        }
+                        if (values[leng + 2] == value) {
+                            if ((values[leng + 3] & 0xff) == 0xCC && (values[leng + 4] & 0xff) == 0x33 && (values[leng + 5] & 0xff) == 0xC3 && (values[leng + 6] & 0xff) == 0x3C) {
+                                analysis(values);
+                            }
+                        }
+                    }
+                }
+
                 break;
         }
 
@@ -287,6 +352,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private class ConnectThread extends Thread {
         private final BluetoothSocket mmSocket;
+
         private final BluetoothDevice mmDevice;
 
         public ConnectThread(BluetoothDevice device) {
@@ -408,7 +474,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
-        /* Call this from the main activity to send data to the remote device */
         public void write(byte[] bytes) {
             try {
                 mmOutStream.write(bytes);
@@ -416,7 +481,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
-        /* Call this from the main activity to shutdown the connection */
         public void cancel() {
             try {
                 mmSocket.close();
@@ -426,19 +490,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void analysis(byte[] values) {
-
-       /* int s1 = values[2] * 256 + values[3];
-
-        int s2 = values[4] * 256 + values[5];
-
-        int s3 = values[6] * 256 + values[7];
-
-        int s4 = values[8] * 256 + values[9];
-
-        int s5 = values[10] * 256 + values[11];*/
-
-
-        for (int i = 2; i < values.length - 5; i++) {
+       /* for (int i = 2; i < values.length - 5; i++) {
             int value = values[i] * 256 + values[i + 1];
             int type = value & 0xf000 >> 12;
             int real_value = value & 0x0fff;
@@ -460,7 +512,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
             }
             i++;
-        }
+        }*/
     }
 
 

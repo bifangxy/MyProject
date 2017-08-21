@@ -222,11 +222,13 @@
         android:orientation="vertical">
 
         <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/line_chart_one"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2" />
 
         <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/line_chart_two"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="10dp"
