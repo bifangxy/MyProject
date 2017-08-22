@@ -29,7 +29,19 @@ public class LineChartManager {
 
     private static LineDataSet dataSet;
 
+    private static LineDataSet dataSet1;
+
+    private static LineDataSet dataSet2;
+
+    private static LineDataSet dataSet3;
+
+    private static LineDataSet dataSet4;
+
     private static LineChart chart;
+
+    private static LineChart chart1;
+
+    private static LineChart chart2;
 
     /**
      * @param context    上下文
@@ -84,8 +96,76 @@ public class LineChartManager {
                     dataSet.addEntry(entry);
                 }
             }
-            chart.notifyDataSetChanged(); // let the chart know it's data changed
-            chart.invalidate();
+            chart1.notifyDataSetChanged(); // let the chart know it's data changed
+            chart1.invalidate();
+        } catch (NullPointerException e) {
+
+        }
+
+    }
+
+    public static void changeData1(List<Float> floatList) {
+        dataSet1.clear();
+        try {
+            for (int i = 0; i < floatList.size(); i++) {
+                if (floatList != null && floatList.get(i) != null) {
+                    Entry entry = new Entry(floatList.get(i), i);
+                    dataSet1.addEntry(entry);
+                }
+            }
+            chart1.notifyDataSetChanged(); // let the chart know it's data changed
+            chart1.invalidate();
+        } catch (NullPointerException e) {
+
+        }
+
+    }
+
+    public static void changeData2(List<Float> floatList) {
+        dataSet2.clear();
+        try {
+            for (int i = 0; i < floatList.size(); i++) {
+                if (floatList != null && floatList.get(i) != null) {
+                    Entry entry = new Entry(floatList.get(i), i);
+                    dataSet2.addEntry(entry);
+                }
+            }
+            chart1.notifyDataSetChanged(); // let the chart know it's data changed
+            chart1.invalidate();
+        } catch (NullPointerException e) {
+
+        }
+
+    }
+
+    public static void changeData3(List<Float> floatList) {
+        dataSet3.clear();
+        try {
+            for (int i = 0; i < floatList.size(); i++) {
+                if (floatList != null && floatList.get(i) != null) {
+                    Entry entry = new Entry(floatList.get(i), i);
+                    dataSet3.addEntry(entry);
+                }
+            }
+            chart2.notifyDataSetChanged(); // let the chart know it's data changed
+            chart2.invalidate();
+        } catch (NullPointerException e) {
+
+        }
+
+    }
+
+    public static void changeData4(List<Float> floatList) {
+        dataSet4.clear();
+        try {
+            for (int i = 0; i < floatList.size(); i++) {
+                if (floatList != null && floatList.get(i) != null) {
+                    Entry entry = new Entry(floatList.get(i), i);
+                    dataSet4.addEntry(entry);
+                }
+            }
+            chart2.notifyDataSetChanged(); // let the chart know it's data changed
+            chart2.invalidate();
         } catch (NullPointerException e) {
 
         }
@@ -99,19 +179,18 @@ public class LineChartManager {
      * @param yValue1    另一条折线在y轴的值
      * @Description:创建两条折线
      */
-    public static void initDoubleLineChart(Context context, LineChart mLineChart,
-                                           ArrayList<Entry> yValue, ArrayList<Entry> yValue1, ArrayList<Entry> yValue2) {
-
-        initDataStyle(context, mLineChart);
-
-        LineDataSet dataSet = new LineDataSet(yValue, "间隙1");
+    public static void initThridLineChart(Context context, LineChart mLineChart,
+                                          ArrayList<Entry> yValue, ArrayList<Entry> yValue1, ArrayList<Entry> yValue2) {
+        chart1 = mLineChart;
+        initDataStyle(context, chart1);
+        dataSet = new LineDataSet(yValue, "间隙1");
         dataSet.setColor(Color.RED);
         dataSet.setCircleColor(Color.RED);
         dataSet.setDrawValues(false);
         dataSet.setDrawCircles(false);
         dataSet.setLineWidth(2);
 
-        LineDataSet dataSet1 = new LineDataSet(yValue1, "间隙2");
+        dataSet1 = new LineDataSet(yValue1, "间隙2");
         dataSet1.setColor(Color.parseColor("#66CDAA"));
         dataSet1.setCircleColor(Color.parseColor("#66CDAA"));
         dataSet1.setDrawValues(false);
@@ -119,7 +198,7 @@ public class LineChartManager {
         dataSet1.setLineWidth(2);
 
 
-        LineDataSet dataSet2 = new LineDataSet(yValue2, "间隙3");
+        dataSet2 = new LineDataSet(yValue2, "间隙3");
         dataSet2.setColor(Color.parseColor("#000000"));
         dataSet2.setCircleColor(Color.parseColor("#000000"));
         dataSet2.setDrawValues(false);
@@ -144,6 +223,42 @@ public class LineChartManager {
         mLineChart.invalidate();
     }
 
+    public static void initDoubleLineChart(Context context, LineChart mLineChart,
+                                           ArrayList<Entry> yValue, ArrayList<Entry> yValue1) {
+        chart2 = mLineChart;
+        initDataStyle(context, chart2);
+
+        dataSet3 = new LineDataSet(yValue, "加速度1");
+        dataSet3.setColor(Color.RED);
+        dataSet3.setCircleColor(Color.RED);
+        dataSet3.setDrawValues(false);
+        dataSet3.setDrawCircles(false);
+        dataSet3.setLineWidth(2);
+
+        dataSet4 = new LineDataSet(yValue1, "加速度2");
+        dataSet4.setColor(Color.parseColor("#66CDAA"));
+        dataSet4.setCircleColor(Color.parseColor("#66CDAA"));
+        dataSet4.setDrawValues(false);
+        dataSet4.setDrawCircles(false);
+        dataSet4.setLineWidth(2);
+
+        //构建一个类型为LineDataSet的ArrayList 用来存放所有 y的LineDataSet   他是构建最终加入LineChart数据集所需要的参数
+        ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+
+        //将数据加入dataSets
+        dataSets.add(dataSet3);
+        dataSets.add(dataSet4);
+
+        //构建一个LineData  将dataSets放入
+        LineData lineData = new LineData(dataSets);
+        //将数据插入
+        mLineChart.setData(lineData);
+        //设置动画效果
+//        mLineChart.animateY(2000, Easing.EasingOption.Linear);
+//        mLineChart.animateX(2000, Easing.EasingOption.Linear);
+        mLineChart.invalidate();
+    }
+
     /**
      * @param context
      * @param mLineChart
@@ -164,7 +279,7 @@ public class LineChartManager {
         XAxis xAxis = mLineChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setAxisLineColor(Color.parseColor("#66CDAA"));
-        xAxis.setAxisMaxValue(100);
+        xAxis.setAxisMaxValue(200);
         xAxis.setAxisMinValue(0);
         xAxis.setAxisLineWidth(1);
         xAxis.setDrawGridLines(false);
@@ -172,7 +287,9 @@ public class LineChartManager {
         //设置是否显示x轴
         xAxis.setEnabled(false);
 
-
+        YAxis yAxisLeft = mLineChart.getAxisLeft();
+        yAxisLeft.setAxisMaximum(50);
+        yAxisLeft.setAxisMinimum(-50);
         //设置右边y轴的样式
         YAxis yAxisRight = mLineChart.getAxisRight();
         yAxisRight.setEnabled(false);

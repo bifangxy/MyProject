@@ -92,15 +92,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private BluetoothSocket bluetoothSocket;
 
-    private ArrayList<Entry> s1_list;
+    private List<Float> s1_list;
 
-    private ArrayList<Entry> s2_list;
+    private List<Float> s2_list;
 
-    private ArrayList<Entry> s3_list;
+    private List<Float> s3_list;
 
-    private ArrayList<Entry> a1_list;
+    private List<Float> a1_list;
 
-    private ArrayList<Entry> a2_list;
+    private List<Float> a2_list;
+
+
+    private float s1_value;
+
+    private float s2_value;
+
+    private float s3_value;
+
+    private float a1_value;
+
+    private float a2_value;
+
+    private int s1_count;
+
+    private int s2_count;
+
+    private int s3_count;
+
+    private int a1_count;
+
+    private int a2_count;
+
 
     //    private byte[] test_data = {0x2F, 0xFF, 0x37, 0xEF, 0x40, 0x01, 0x0F, 0xFF, 0x1F, 0xFF, 0x2F, 0xFF, 0x37, 0xEF, 0x40, 0x01, 0x8F, 0xA0, 0x9F, 0xA0, 0xAF, 0xA0, 0xBF, 0xA0, 0xC0, 0x00, 0xB1, 0xCC, 0x33, 0xC3, 0x3C, 0xAA, 0x00, 0x28, 0x0F, 0xFF, 0x1F, 0xFF, 0x2F, 0xFF, 0x37, 0xEE, 0x40, 0x01, 0x0F, 0xFF, 0x1F, 0xFF, 0x2F, 0xFF, 0x37, 0xED, 0x40, 0x01, 0x0F, 0xFF, 0x1F, 0xFF, 0x2F, 0xFF, 0x37, 0xEF, 0x40, 0x01, 0x8F, 0xA0, 0x9F, 0xA0, 0xAF, 0xA0, 0xBF, 0xA0, 0xC0, 0x00, 0xB2, 0xCC, 0x33, 0xC3, 0x3C, 0xAA, 0x00, 0x28, 0x0F, 0xFF, 0x1F, 0xFF, 0x2F, 0xFF, 0x37, 0xEE, 0x40, 0x01, 0x0F, 0xFF, 0x1F, 0xFF, 0x2F, 0xFF, 0x37, 0xED, 0x40, 0x01, 0x0F, 0xFF, 0x1F, 0xFF, 0x2F, 0xFF, 0x37, 0xEE, 0x40, 0x01, 0x8F, 0xA0, 0x9F, 0xA0, 0xAF, 0xA0, 0xBF, 0xA0, 0xC0, 0x00, 0xB3, 0xCC, 0x33, 0xC3, 0x3C, 0xAA, 0x00, 0x28, 0x0F, 0xFF, 0x1F, 0xFF, 0x2F, 0xFF, 0x37EE, 0x4001, 0x0FFF, 0x1FFF, 0x2FFF, 0x37EF4001, 0x0FFF, 0x1FFF, 0x2FFF, 0x37EF4001, 0x8FA0, 0x9FA0, 0xAFA0, 0xBFA0, 0xC0,0x00, 0xB0,0xCC, 0x33,0xC3, 0x3C,0xAA, 0x0028, 0x0FFF, 0x1FFF, 0x2FFF, 0x37EF4001, 0x0FFF, 0x1FFF, 0x2FFF, 0x37EE, 0x4001, 0x0FFF, 0x1FFF, 0x2FFF, 0x37EE, 0x4001, 0x8FA0, 0x9FA0, 0xAFA0, 0xBFA0, 0xC000, 0xB1CC, 0x33C3, 0x3CAA, 0x0028, 0x0FFF, 0x1FFF, 0x2FFF, 0x37EF4001, 0x0FFF, 0x1FFF, 0x2FFF, 0x37EF4001, 0x0FFF, 0x1FFF, 0x2FFF, 0x37F0, 0x4001, 0x8FA0, 0x9FA0, 0xAFA0, 0xBFA0, 0xC000, 0xAECC, 0x33C3, 0x3CAA, 0x0028, 0x0FFF, 0x1FFF, 0x2FFF, 0x37F0, 0x4001, 0x0FFF, 0x1FFF};
     private byte[] test_data = {
@@ -114,6 +136,64 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             super.handleMessage(msg);
             switch (msg.what) {
                 case 0:
+                    LineChartManager.changeData(s1_list);
+                    tv_s1_value.setText("" + s1_value);
+                    break;
+                case 1:
+                    LineChartManager.changeData1(s2_list);
+                    tv_s2_value.setText("" + s2_value);
+                    break;
+                case 2:
+                    LineChartManager.changeData2(s3_list);
+                    tv_s3_value.setText("" + s3_value);
+                    break;
+                case 3:
+                    LineChartManager.changeData3(a1_list);
+                    tv_a1_value.setText("" + a1_value);
+                    break;
+                case 4:
+                    LineChartManager.changeData4(a2_list);
+                    tv_a2_value.setText("" + a2_value);
+                    break;
+                case 8:
+                    tv_s1_count.setText("" + s1_count);
+                    if (s1_count < 3800) {
+                        iv_s1_state.setImageResource(R.mipmap.circle_wrong);
+                    } else {
+                        iv_s1_state.setImageResource(R.mipmap.circle_right);
+                    }
+                    break;
+                case 9:
+                    tv_s2_count.setText("" + s2_count);
+                    if (s2_count < 3800) {
+                        iv_s2_state.setImageResource(R.mipmap.circle_wrong);
+                    } else {
+                        iv_s2_state.setImageResource(R.mipmap.circle_right);
+                    }
+                    break;
+                case 10:
+                    tv_s3_count.setText("" + s3_count);
+                    if (s3_count < 3800) {
+                        iv_s3_state.setImageResource(R.mipmap.circle_wrong);
+                    } else {
+                        iv_s3_state.setImageResource(R.mipmap.circle_right);
+                    }
+                    break;
+                case 11:
+                    tv_a1_count.setText("" + a1_count);
+                    if (a1_count < 3800) {
+                        iv_a1_state.setImageResource(R.mipmap.circle_wrong);
+                    } else {
+                        iv_a1_state.setImageResource(R.mipmap.circle_right);
+                    }
+                    break;
+                case 12:
+                    tv_a2_count.setText("" + a2_count);
+                    if (a2_count < 3800) {
+                        iv_a2_state.setImageResource(R.mipmap.circle_wrong);
+                    } else {
+                        iv_a2_state.setImageResource(R.mipmap.circle_right);
+                    }
                     break;
                 default:
                     break;
@@ -176,25 +256,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_device.setAdapter(adapter);
 
-        for (int i = 0; i < 50; i++) {
-            Random random = new Random();
-            int s = random.nextInt(100) % (100 + 1);
-            Entry entry = new Entry(i, s);
-            s1_list.add(entry);
-        }
-        for (int i = 0; i < 50; i++) {
-            Random random = new Random();
-            int s = random.nextInt(100) % (100 + 1);
-            Entry entry = new Entry(i, s);
-            s2_list.add(entry);
-        }
-        for (int i = 0; i < 50; i++) {
-            Random random = new Random();
-            int s = random.nextInt(100) % (100 + 1);
-            Entry entry = new Entry(i, s);
-            s3_list.add(entry);
-        }
-        LineChartManager.initDoubleLineChart(mContext, mChart_one, s1_list, s2_list, s3_list);
+        ArrayList<Entry> datalist = new ArrayList<>();
+        datalist.add(new Entry(0, 20));
+        LineChartManager.initThridLineChart(mContext, mChart_one, datalist, datalist, datalist);
+        LineChartManager.initDoubleLineChart(mContext, mChart_two, datalist, datalist);
 
     }
 
@@ -242,34 +307,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 break;
             case R.id.bt_exit:
-
-
-                for (int i = 0; i < test_data.length - 10; i++) {
-                    if ((test_data[i] & 0xff) == 0xAA) {
-
-                        int high = test_data[i + 1];
-
-                        int low = test_data[i + 2];
-
-                        int leng = 256 * high + low;
-
-                        byte[] values = new byte[leng + 7];
-
-                        System.arraycopy(test_data, i + 1, values, 0, leng + 7);
-
-                        int value = values[0];
-
-                        for (int j = 0; j < values.length - 6; j++) {
-                            value = value ^ values[j + 1];
-                        }
-                        if (values[leng + 2] == value) {
-                            if ((values[leng + 3] & 0xff) == 0xCC && (values[leng + 4] & 0xff) == 0x33 && (values[leng + 5] & 0xff) == 0xC3 && (values[leng + 6] & 0xff) == 0x3C) {
-                                analysis(values);
-                            }
-                        }
-                    }
-                }
-
+                a1_value = (20 * 3639) / 4096;
+                Log.d(LOG_TAG, "----" + a1_value + "----");
                 break;
         }
 
@@ -431,7 +470,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         public void run() {
-            byte[] buffer = new byte[512];  // buffer store for the stream
+            byte[] buffer = new byte[1024];  // buffer store for the stream
             int bytes; // bytes returned from read()
             // Keep listening to the InputStream until an exception occurs
             while (true) {
@@ -439,14 +478,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
 
-                    for (int i = 0; i < bytes; i++) {
-                        if (buffer[i] == 0xAA) {
+                    for (int i = 0; i < bytes - 60; i++) {
+                        if ((buffer[i] & 0xff) == 0xAA) {
 
-                            int high = buffer[i + 1];
+                            int high = (buffer[i + 1] & 0xff);
 
-                            int low = buffer[i + 2];
+                            int low = (buffer[i + 2] & 0xff);
 
                             int leng = 256 * high + low;
+
+                            if (leng != 40) {
+                                return;
+                            }
 
                             byte[] values = new byte[leng + 7];
 
@@ -458,13 +501,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 value = value ^ values[j + 1];
                             }
                             if (values[leng + 2] == value) {
-                                if (values[leng + 3] == 0xCC && values[leng + 4] == 0x33 && values[leng + 5] == 0xC3 && values[leng + 6] == 0x3C) {
+                                if ((values[leng + 3] & 0xff) == 0xCC && (values[leng + 4] & 0xff) == 0x33 && (values[leng + 5] & 0xff) == 0xC3 && (values[leng + 6] & 0xff) == 0x3C) {
                                     Log.d(LOG_TAG, "-------数据正确-----");
                                     analysis(values);
                                 }
                             }
-                        } else {
-                            i++;
                         }
                     }
 
@@ -490,29 +531,67 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void analysis(byte[] values) {
-       /* for (int i = 2; i < values.length - 5; i++) {
-            int value = values[i] * 256 + values[i + 1];
-            int type = value & 0xf000 >> 12;
+        for (int i = 2; i < values.length - 5; i++) {
+            int value = (values[i] & 0xff) * 256 + (values[i + 1]);
+            int type = (value & 0xf000) >> 12;
             int real_value = value & 0x0fff;
             switch (type) {
                 case 0:
-                    s1_list.add(real_value);
+                    s1_value = ((float) 20 / 4095) * real_value;
+                    if (s1_list.size() > 200) {
+                        s1_list.remove(200);
+                    }
+                    s1_list.add(0, s1_value);
                     break;
                 case 1:
-                    s2_list.add(real_value);
+                    s2_value = ((float) 20 / 4095) * real_value;
+                    if (s2_list.size() > 200) {
+                        s2_list.remove(200);
+                    }
+                    s2_list.add(0, s2_value);
                     break;
                 case 2:
-                    s3_list.add(real_value);
+                    s3_value = ((float) 20 / 4095) * real_value;
+                    if (s3_list.size() > 200) {
+                        s3_list.remove(200);
+                    }
+                    s3_list.add(0, s3_value);
                     break;
                 case 3:
-                    a1_list.add(real_value);
+                    a1_value = ((float) 49 / 4095) * (real_value - 2048);
+                    if (a1_list.size() > 200) {
+                        a1_list.remove(200);
+                    }
+                    a1_list.add(0, a1_value);
                     break;
                 case 4:
-                    a2_list.add(real_value);
+                    a2_value = ((float) 49 / 4095) * (real_value - 2048);
+                    if (a2_list.size() > 200) {
+                        a2_list.remove(200);
+                    }
+                    a2_list.add(0, a2_value);
+                    break;
+                case 8:
+                    s1_count = real_value;
+                    break;
+                case 9:
+                    s2_count = real_value;
+                    break;
+                case 10:
+                    s3_count = real_value;
+                    break;
+                case 11:
+                    a1_count = real_value;
+                    break;
+                case 12:
+                    a2_count = real_value;
+                    break;
+                default:
                     break;
             }
+            mHandler.sendEmptyMessage(type);
             i++;
-        }*/
+        }
     }
 
 
