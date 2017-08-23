@@ -92,11 +92,11 @@ public class LineChartManager {
         try {
             for (int i = 0; i < floatList.size(); i++) {
                 if (floatList != null && floatList.get(i) != null) {
-                    Entry entry = new Entry(floatList.get(i), i);
+                    Entry entry = new Entry(i, floatList.get(i));
                     dataSet.addEntry(entry);
                 }
             }
-            chart1.notifyDataSetChanged(); // let the chart know it's data changed
+            chart1.notifyDataSetChanged();
             chart1.invalidate();
         } catch (NullPointerException e) {
 
@@ -109,11 +109,16 @@ public class LineChartManager {
         try {
             for (int i = 0; i < floatList.size(); i++) {
                 if (floatList != null && floatList.get(i) != null) {
-                    Entry entry = new Entry(floatList.get(i), i);
+                    Entry entry = new Entry(i, floatList.get(i));
                     dataSet1.addEntry(entry);
                 }
             }
-            chart1.notifyDataSetChanged(); // let the chart know it's data changed
+            ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+            dataSets.add(dataSet);
+            dataSets.add(dataSet1);
+            dataSets.add(dataSet2);
+            LineData lineData = new LineData(dataSets);
+            chart1.setData(lineData);
             chart1.invalidate();
         } catch (NullPointerException e) {
 
@@ -126,11 +131,16 @@ public class LineChartManager {
         try {
             for (int i = 0; i < floatList.size(); i++) {
                 if (floatList != null && floatList.get(i) != null) {
-                    Entry entry = new Entry(floatList.get(i), i);
+                    Entry entry = new Entry(i, floatList.get(i));
                     dataSet2.addEntry(entry);
                 }
             }
-            chart1.notifyDataSetChanged(); // let the chart know it's data changed
+//            ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+//            dataSets.add(dataSet);
+//            dataSets.add(dataSet1);
+//            dataSets.add(dataSet2);
+//            LineData lineData = new LineData(dataSets);
+            chart1.notifyDataSetChanged();
             chart1.invalidate();
         } catch (NullPointerException e) {
 
@@ -143,11 +153,16 @@ public class LineChartManager {
         try {
             for (int i = 0; i < floatList.size(); i++) {
                 if (floatList != null && floatList.get(i) != null) {
-                    Entry entry = new Entry(floatList.get(i), i);
+                    Entry entry = new Entry(i, floatList.get(i));
                     dataSet3.addEntry(entry);
                 }
             }
-            chart2.notifyDataSetChanged(); // let the chart know it's data changed
+
+            ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+            dataSets.add(dataSet3);
+            dataSets.add(dataSet4);
+            LineData lineData = new LineData(dataSets);
+            chart2.setData(lineData);
             chart2.invalidate();
         } catch (NullPointerException e) {
 
@@ -160,11 +175,15 @@ public class LineChartManager {
         try {
             for (int i = 0; i < floatList.size(); i++) {
                 if (floatList != null && floatList.get(i) != null) {
-                    Entry entry = new Entry(floatList.get(i), i);
+                    Entry entry = new Entry(i, floatList.get(i));
                     dataSet4.addEntry(entry);
                 }
             }
-            chart2.notifyDataSetChanged(); // let the chart know it's data changed
+            ArrayList<ILineDataSet> dataSets = new ArrayList<>();
+            dataSets.add(dataSet3);
+            dataSets.add(dataSet4);
+            LineData lineData = new LineData(dataSets);
+            chart2.setData(lineData);
             chart2.invalidate();
         } catch (NullPointerException e) {
 
@@ -218,15 +237,13 @@ public class LineChartManager {
         //将数据插入
         mLineChart.setData(lineData);
         //设置动画效果
-        mLineChart.animateY(2000, Easing.EasingOption.Linear);
-        mLineChart.animateX(2000, Easing.EasingOption.Linear);
         mLineChart.invalidate();
     }
 
     public static void initDoubleLineChart(Context context, LineChart mLineChart,
                                            ArrayList<Entry> yValue, ArrayList<Entry> yValue1) {
         chart2 = mLineChart;
-        initDataStyle(context, chart2);
+        initDataStyle2(context, chart2);
 
         dataSet3 = new LineDataSet(yValue, "加速度1");
         dataSet3.setColor(Color.RED);
@@ -286,10 +303,41 @@ public class LineChartManager {
         xAxis.setDrawLabels(false);
         //设置是否显示x轴
         xAxis.setEnabled(false);
-
         YAxis yAxisLeft = mLineChart.getAxisLeft();
-        yAxisLeft.setAxisMaximum(50);
-        yAxisLeft.setAxisMinimum(-50);
+        yAxisLeft.setAxisMinimum(0);
+        yAxisLeft.setAxisMaximum(30);
+
+        //设置右边y轴的样式
+        YAxis yAxisRight = mLineChart.getAxisRight();
+        yAxisRight.setEnabled(false);
+
+    }
+
+    private static void initDataStyle2(Context context, LineChart mLineChart) {
+        //设置图表是否支持触控操作
+        mLineChart.setTouchEnabled(false);
+        mLineChart.setScaleEnabled(false);
+        //设置点击折线点时，显示其数值
+//        MyMakerView mv = new MyMakerView(context, R.layout.item_mark_layout);
+//        mLineChart.setMarkerView(mv);
+        //设置折线的描述的样式（默认在图表的左下角）
+        Legend title = mLineChart.getLegend();
+        title.setEnabled(true);
+
+        //设置x轴的样式
+        XAxis xAxis = mLineChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setAxisLineColor(Color.parseColor("#66CDAA"));
+        xAxis.setAxisMaxValue(200);
+        xAxis.setAxisMinValue(0);
+        xAxis.setAxisLineWidth(1);
+        xAxis.setDrawGridLines(false);
+        xAxis.setDrawLabels(false);
+        //设置是否显示x轴
+        xAxis.setEnabled(false);
+        YAxis yAxisLeft = mLineChart.getAxisLeft();
+        yAxisLeft.setAxisMinimum(-55);
+        yAxisLeft.setAxisMaximum(55);
         //设置右边y轴的样式
         YAxis yAxisRight = mLineChart.getAxisRight();
         yAxisRight.setEnabled(false);
