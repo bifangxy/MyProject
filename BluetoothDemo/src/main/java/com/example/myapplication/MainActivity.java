@@ -154,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private SweetAlertDialog mDialog;
 
+    private BluetoothData mData;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -258,6 +259,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 case 101:
                     Toast.makeText(mContext, "连接成功", Toast.LENGTH_SHORT).show();
                     break;
+                case 10001:
+                    Toast.makeText(mContext, "解析到数据", Toast.LENGTH_SHORT).show();
+                    break;
+                case 10002:
+                    Toast.makeText(mContext, "接收到到数据", Toast.LENGTH_SHORT).show();
+                    break;
+                case 10003:
+                    Toast.makeText(mContext, "正在采集", Toast.LENGTH_SHORT).show();
+                    break;
                 default:
                     break;
 
@@ -306,6 +316,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initData() {
+
+        mData = new BluetoothData();
 
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -362,6 +374,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                        int pos, long id) {
                 if (pos != 0) {
                     bluetoothDevice = deviceList.get(pos - 1);
+                    Toast.makeText(mContext, bluetoothDevice.getName(), Toast.LENGTH_SHORT).show();
                     try {
                         bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(UUID.fromString(UUID_STR));
                         if (bluetoothDevice.getBondState() == BluetoothDevice.BOND_NONE) {
@@ -411,7 +424,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     a1_list.clear();
                     a2_list.clear();
                     bt_start.setText("停止采集");
-
                     isContinue = true;
                     isConnect = true;
                 } else {
@@ -643,33 +655,112 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     // Read from the InputStream
                     bytes = inputStream.read(buffer);
                     if (isContinue) {
-                        for (int i = 0; i < bytes - 60; i++) {
-                            if ((buffer[i] & 0xff) == 0xAA) {
-
-                                int high = (buffer[i + 1] & 0xff);
-
-                                int low = (buffer[i + 2] & 0xff);
-
-                                int leng = 256 * high + low;
-
-                                if (leng != 40) {
-                                    return;
+                        for (int i = 0; i < bytes; i++) {
+                            if (mData.isReadFinish()) {
+                                if ((buffer[i] & 0xff) == 0xAA) {
+                                    if (bytes - i >= 48) {
+                                        mData.setReadFinish(true);
+                                        int high = (buffer[i + 1] & 0xff);
+                                        int low = (buffer[i + 2] & 0xff);
+                                        int leng = 256 * high + low;
+                                        if (leng != 40) {
+                                            return;
+                                        }
+                                        byte[] values = new byte[leng + 7];
+                                        System.arraycopy(buffer, i + 1, values, 0, leng + 7);
+                                        int value = values[0];
+                                        for (int j = 0; j < values.length - 6; j++) {
+                                            value = value ^ values[j + 1];
+                                        }
+                                        if (values[leng + 2] == value) {
+                                            if ((values[leng + 3] & 0xff) == 0xCC && (values[leng + 4] & 0xff) == 0x33 && (values[leng + 5] & 0xff) == 0xC3 && (values[leng + 6] & 0xff) == 0x3C) {
+                                                analysis(values);
+                                                i = i + 40;
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    mData.setReadFinish(false);
+                                    if (bytes - i == 1) {
+                                        mData.setIndex(0);
+                                    } else if (bytes - i == 2) {
+                                        mData.setIndex(1);
+                                        mData.setHigh(buffer[i + 1] & 0xff);
+                                    } else if (bytes - i == 3) {
+                                        mData.setIndex(2);
+                                        mData.setHigh(buffer[i + 1] & 0xff);
+                                        mData.setLow(buffer[i + 2] & 0xff);
+                                    } else if (bytes - i <= 43) {
+                                        mData.setHigh(buffer[i + 1] & 0xff);
+                                        mData.setLow(buffer[i + 2] & 0xff);
+                                        mData.setIndex(bytes - i - 1);
+                                        System.arraycopy(buffer, i + 1, mData.getData(), 0, bytes - i - 1);
+                                    } else if (bytes - i == 44) {
+                                        mData.setHigh(buffer[i + 1] & 0xff);
+                                        mData.setLow(buffer[i + 2] & 0xff);
+                                        mData.setCal(buffer[i + 43]);
+                                        mData.setIndex(43);
+                                        System.arraycopy(buffer, i + 1, mData.getData(), 0, 42);
+                                    } else {
+                                        mData.setHigh(buffer[i + 1] & 0xff);
+                                        mData.setLow(buffer[i + 2] & 0xff);
+                                        mData.setCal(buffer[i + 43]);
+                                        System.arraycopy(buffer, i + 1, mData.getData(), 0, 42);
+                                        System.arraycopy(buffer, i + 44, mData.getEnd(), 0, bytes - i - 44);
+                                        mData.setIndex(bytes - i - 1);
+                                    }
+                                    i = bytes-1;
                                 }
 
-                                byte[] values = new byte[leng + 7];
+                            } else {
+                                if (bytes - i >= 48) {
+                                    mData.setReadFinish(true);
+                                    int index = mData.getIndex();
+                                    if (index == 0) {
+                                        mData.setHigh(buffer[i] & 0xff);
+                                        mData.setLow(buffer[i + 1] & 0xff);
+                                        mData.setCal(buffer[i + 42]);
+                                        System.arraycopy(buffer, i, mData.getData(), 0, 42);
+                                        System.arraycopy(buffer, i + 44, mData.getEnd(), 0, bytes - i - 44);
+                                        mData.setIndex(bytes - i - 1);
+                                    } else if (index == 1) {
+                                        mData.setLow(buffer[i] & 0xff);
+                                        mData.setCal(buffer[i + 41]);
+                                        System.arraycopy(buffer, i, mData.getData(), 1, 41);
+                                        System.arraycopy(buffer, i + 43, mData.getEnd(), 0, 4);
+                                    } else if (index == 2) {
+                                        mData.setCal(buffer[i + 40]);
+                                        System.arraycopy(buffer, i, mData.getData(), 2, 40);
+                                        System.arraycopy(buffer, i + 43, mData.getEnd(), 0, 4);
+                                    } else if (index <= 42) {
+                                        mData.setCal(buffer[i + 40]);
+                                        System.arraycopy(buffer, i, mData.getData(), index, 42 - index);
 
-                                System.arraycopy(buffer, i + 1, values, 0, leng + 7);
+                                    } else if (index == 43) {
+                                        System.arraycopy(buffer, i + 43 - index, mData.getEnd(), 0, 4);
+                                    } else {
+                                        System.arraycopy(buffer, i + index - 43, mData.getData(), 0, 47 - index);
+                                    }
+                                    i = i + (46 - index - 1);
 
-                                int value = values[0];
-
-                                for (int j = 0; j < values.length - 6; j++) {
-                                    value = value ^ values[j + 1];
-                                }
-                                if (values[leng + 2] == value) {
-                                    if ((values[leng + 3] & 0xff) == 0xCC && (values[leng + 4] & 0xff) == 0x33 && (values[leng + 5] & 0xff) == 0xC3 && (values[leng + 6] & 0xff) == 0x3C) {
-                                        analysis(values);
+                                    int high = (mData.getHigh());
+                                    int low = (mData.getLow());
+                                    int leng = 256 * high + low;
+                                    if (leng != 40) {
+                                        return;
+                                    }
+                                    int value = mData.getData()[0];
+                                    for (int j = 0; j < mData.getData().length; j++) {
+                                        value = value ^ mData.getData()[j + 1];
+                                    }
+                                    if (mData.getData()[leng + 2] == value) {
+                                        if ((mData.getData()[leng + 3] & 0xff) == 0xCC && (mData.getData()[leng + 4] & 0xff) == 0x33 && (mData.getData()[leng + 5] & 0xff) == 0xC3 && (mData.getData()[leng + 6] & 0xff) == 0x3C) {
+                                            analysis(mData.getData());
+                                            i = i + 40;
+                                        }
                                     }
                                 }
+
                             }
                         }
                     }
