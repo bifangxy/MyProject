@@ -661,7 +661,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             if (i == 0 && !isFinish) {
                                 if (bytes >= 47 - index) {
                                     isFinish = true;
-                                    System.arraycopy(bytes, i, catch_bytes, index, 47 - index);
+                                    System.arraycopy(buffer, i, catch_bytes, index, 47 - index);
                                     i = i + 46 - index;
 
                                     int high = (catch_bytes[0] & 0xff);
@@ -677,13 +677,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     if (catch_bytes[leng + 2] == value) {
                                         if ((catch_bytes[leng + 3] & 0xff) == 0xCC && (catch_bytes[leng + 4] & 0xff) == 0x33 && (catch_bytes[leng + 5] & 0xff) == 0xC3 && (catch_bytes[leng + 6] & 0xff) == 0x3C) {
                                             analysis(catch_bytes);
-                                            i = i + 46;
                                         }
                                     }
 
                                 } else {
                                     isFinish = false;
-                                    System.arraycopy(bytes, i, catch_bytes, index, bytes);
+                                    System.arraycopy(buffer, i, catch_bytes, index, bytes);
                                     index = index + bytes;
                                     i = bytes - 1;
                                 }
@@ -712,7 +711,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     } else {
                                         isFinish = false;
                                         index = bytes - i - 1;
-                                        System.arraycopy(bytes, i, catch_bytes, 0, index);
+                                        System.arraycopy(buffer, i + 1, catch_bytes, 0, index);
+                                        i = bytes - 1;
                                     }
 
                                 }
