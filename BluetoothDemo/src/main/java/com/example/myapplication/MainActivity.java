@@ -154,7 +154,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private SweetAlertDialog mDialog;
 
-    private BluetoothData mData;
+    private byte[] catch_bytes = new byte[47];
+
+    private boolean isFinish = true;
+
+    private int index = 0;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -316,8 +320,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initData() {
-
-        mData = new BluetoothData();
 
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -656,10 +658,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     bytes = inputStream.read(buffer);
                     if (isContinue) {
                         for (int i = 0; i < bytes; i++) {
-                            if (mData.isReadFinish()) {
+                            if (i == 0 && !isFinish) {
+                                if (bytes >= 47 - index) {
+                                    isFinish = true;
+                                    System.arraycopy(bytes, i, catch_bytes, index, 47 - index);
+                                    i = i + 46 - index;
+
+                                    int high = (catch_bytes[0] & 0xff);
+                                    int low = (catch_bytes[1] & 0xff);
+                                    int leng = 256 * high + low;
+                                    if (leng != 40) {
+                                        return;
+                                    }
+                                    int value = catch_bytes[0];
+                                    for (int j = 0; j < catch_bytes.length - 6; j++) {
+                                        value = value ^ catch_bytes[j + 1];
+                                    }
+                                    if (catch_bytes[leng + 2] == value) {
+                                        if ((catch_bytes[leng + 3] & 0xff) == 0xCC && (catch_bytes[leng + 4] & 0xff) == 0x33 && (catch_bytes[leng + 5] & 0xff) == 0xC3 && (catch_bytes[leng + 6] & 0xff) == 0x3C) {
+                                            analysis(catch_bytes);
+                                            i = i + 46;
+                                        }
+                                    }
+
+                                } else {
+                                    isFinish = false;
+                                    System.arraycopy(bytes, i, catch_bytes, index, bytes);
+                                    index = index + bytes;
+                                    i = bytes - 1;
+                                }
+                            } else {
                                 if ((buffer[i] & 0xff) == 0xAA) {
                                     if (bytes - i >= 48) {
-                                        mData.setReadFinish(true);
+                                        isFinish = true;
                                         int high = (buffer[i + 1] & 0xff);
                                         int low = (buffer[i + 2] & 0xff);
                                         int leng = 256 * high + low;
@@ -675,92 +706,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                         if (values[leng + 2] == value) {
                                             if ((values[leng + 3] & 0xff) == 0xCC && (values[leng + 4] & 0xff) == 0x33 && (values[leng + 5] & 0xff) == 0xC3 && (values[leng + 6] & 0xff) == 0x3C) {
                                                 analysis(values);
-                                                i = i + 40;
+                                                i = i + 46;
                                             }
                                         }
-                                    }
-                                } else {
-                                    mData.setReadFinish(false);
-                                    if (bytes - i == 1) {
-                                        mData.setIndex(0);
-                                    } else if (bytes - i == 2) {
-                                        mData.setIndex(1);
-                                        mData.setHigh(buffer[i + 1] & 0xff);
-                                    } else if (bytes - i == 3) {
-                                        mData.setIndex(2);
-                                        mData.setHigh(buffer[i + 1] & 0xff);
-                                        mData.setLow(buffer[i + 2] & 0xff);
-                                    } else if (bytes - i <= 43) {
-                                        mData.setHigh(buffer[i + 1] & 0xff);
-                                        mData.setLow(buffer[i + 2] & 0xff);
-                                        mData.setIndex(bytes - i - 1);
-                                        System.arraycopy(buffer, i + 1, mData.getData(), 0, bytes - i - 1);
-                                    } else if (bytes - i == 44) {
-                                        mData.setHigh(buffer[i + 1] & 0xff);
-                                        mData.setLow(buffer[i + 2] & 0xff);
-                                        mData.setCal(buffer[i + 43]);
-                                        mData.setIndex(43);
-                                        System.arraycopy(buffer, i + 1, mData.getData(), 0, 42);
                                     } else {
-                                        mData.setHigh(buffer[i + 1] & 0xff);
-                                        mData.setLow(buffer[i + 2] & 0xff);
-                                        mData.setCal(buffer[i + 43]);
-                                        System.arraycopy(buffer, i + 1, mData.getData(), 0, 42);
-                                        System.arraycopy(buffer, i + 44, mData.getEnd(), 0, bytes - i - 44);
-                                        mData.setIndex(bytes - i - 1);
+                                        isFinish = false;
+                                        index = bytes - i - 1;
+                                        System.arraycopy(bytes, i, catch_bytes, 0, index);
                                     }
-                                    i = bytes-1;
+
                                 }
-
-                            } else {
-                                if (bytes - i >= 48) {
-                                    mData.setReadFinish(true);
-                                    int index = mData.getIndex();
-                                    if (index == 0) {
-                                        mData.setHigh(buffer[i] & 0xff);
-                                        mData.setLow(buffer[i + 1] & 0xff);
-                                        mData.setCal(buffer[i + 42]);
-                                        System.arraycopy(buffer, i, mData.getData(), 0, 42);
-                                        System.arraycopy(buffer, i + 44, mData.getEnd(), 0, bytes - i - 44);
-                                        mData.setIndex(bytes - i - 1);
-                                    } else if (index == 1) {
-                                        mData.setLow(buffer[i] & 0xff);
-                                        mData.setCal(buffer[i + 41]);
-                                        System.arraycopy(buffer, i, mData.getData(), 1, 41);
-                                        System.arraycopy(buffer, i + 43, mData.getEnd(), 0, 4);
-                                    } else if (index == 2) {
-                                        mData.setCal(buffer[i + 40]);
-                                        System.arraycopy(buffer, i, mData.getData(), 2, 40);
-                                        System.arraycopy(buffer, i + 43, mData.getEnd(), 0, 4);
-                                    } else if (index <= 42) {
-                                        mData.setCal(buffer[i + 40]);
-                                        System.arraycopy(buffer, i, mData.getData(), index, 42 - index);
-
-                                    } else if (index == 43) {
-                                        System.arraycopy(buffer, i + 43 - index, mData.getEnd(), 0, 4);
-                                    } else {
-                                        System.arraycopy(buffer, i + index - 43, mData.getData(), 0, 47 - index);
-                                    }
-                                    i = i + (46 - index - 1);
-
-                                    int high = (mData.getHigh());
-                                    int low = (mData.getLow());
-                                    int leng = 256 * high + low;
-                                    if (leng != 40) {
-                                        return;
-                                    }
-                                    int value = mData.getData()[0];
-                                    for (int j = 0; j < mData.getData().length; j++) {
-                                        value = value ^ mData.getData()[j + 1];
-                                    }
-                                    if (mData.getData()[leng + 2] == value) {
-                                        if ((mData.getData()[leng + 3] & 0xff) == 0xCC && (mData.getData()[leng + 4] & 0xff) == 0x33 && (mData.getData()[leng + 5] & 0xff) == 0xC3 && (mData.getData()[leng + 6] & 0xff) == 0x3C) {
-                                            analysis(mData.getData());
-                                            i = i + 40;
-                                        }
-                                    }
-                                }
-
                             }
                         }
                     }
