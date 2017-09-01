@@ -305,7 +305,7 @@ public class LineChartManager {
         xAxis.setEnabled(false);
         YAxis yAxisLeft = mLineChart.getAxisLeft();
         yAxisLeft.setAxisMinimum(0);
-        yAxisLeft.setAxisMaximum(30);
+        yAxisLeft.setAxisMaximum(21);
 
         //设置右边y轴的样式
         YAxis yAxisRight = mLineChart.getAxisRight();
@@ -336,8 +336,8 @@ public class LineChartManager {
         //设置是否显示x轴
         xAxis.setEnabled(false);
         YAxis yAxisLeft = mLineChart.getAxisLeft();
-        yAxisLeft.setAxisMinimum(-55);
-        yAxisLeft.setAxisMaximum(55);
+        yAxisLeft.setAxisMinimum(-15);
+        yAxisLeft.setAxisMaximum(15);
         //设置右边y轴的样式
         YAxis yAxisRight = mLineChart.getAxisRight();
         yAxisRight.setEnabled(false);

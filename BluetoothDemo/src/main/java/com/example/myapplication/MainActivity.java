@@ -22,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -59,8 +60,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Button bt_start;
 
-
     private Button bt_exit;
+
+    private Button bt_help;
 
     private TextView tv_s1_value;
     private TextView tv_s2_value;
@@ -144,6 +146,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private BluetoothSocket mSocket;
 
     private InputStream inputStream;
+
+    private ConnectThread connectThread;
+
+    private ConnectedThread connectedThread;
 
     //    private byte[] test_data = {0x2F, 0xFF, 0x37, 0xEF, 0x40, 0x01, 0x0F, 0xFF, 0x1F, 0xFF, 0x2F, 0xFF, 0x37, 0xEF, 0x40, 0x01, 0x8F, 0xA0, 0x9F, 0xA0, 0xAF, 0xA0, 0xBF, 0xA0, 0xC0, 0x00, 0xB1, 0xCC, 0x33, 0xC3, 0x3C, 0xAA, 0x00, 0x28, 0x0F, 0xFF, 0x1F, 0xFF, 0x2F, 0xFF, 0x37, 0xEE, 0x40, 0x01, 0x0F, 0xFF, 0x1F, 0xFF, 0x2F, 0xFF, 0x37, 0xED, 0x40, 0x01, 0x0F, 0xFF, 0x1F, 0xFF, 0x2F, 0xFF, 0x37, 0xEF, 0x40, 0x01, 0x8F, 0xA0, 0x9F, 0xA0, 0xAF, 0xA0, 0xBF, 0xA0, 0xC0, 0x00, 0xB2, 0xCC, 0x33, 0xC3, 0x3C, 0xAA, 0x00, 0x28, 0x0F, 0xFF, 0x1F, 0xFF, 0x2F, 0xFF, 0x37, 0xEE, 0x40, 0x01, 0x0F, 0xFF, 0x1F, 0xFF, 0x2F, 0xFF, 0x37, 0xED, 0x40, 0x01, 0x0F, 0xFF, 0x1F, 0xFF, 0x2F, 0xFF, 0x37, 0xEE, 0x40, 0x01, 0x8F, 0xA0, 0x9F, 0xA0, 0xAF, 0xA0, 0xBF, 0xA0, 0xC0, 0x00, 0xB3, 0xCC, 0x33, 0xC3, 0x3C, 0xAA, 0x00, 0x28, 0x0F, 0xFF, 0x1F, 0xFF, 0x2F, 0xFF, 0x37EE, 0x4001, 0x0FFF, 0x1FFF, 0x2FFF, 0x37EF4001, 0x0FFF, 0x1FFF, 0x2FFF, 0x37EF4001, 0x8FA0, 0x9FA0, 0xAFA0, 0xBFA0, 0xC0,0x00, 0xB0,0xCC, 0x33,0xC3, 0x3C,0xAA, 0x0028, 0x0FFF, 0x1FFF, 0x2FFF, 0x37EF4001, 0x0FFF, 0x1FFF, 0x2FFF, 0x37EE, 0x4001, 0x0FFF, 0x1FFF, 0x2FFF, 0x37EE, 0x4001, 0x8FA0, 0x9FA0, 0xAFA0, 0xBFA0, 0xC000, 0xB1CC, 0x33C3, 0x3CAA, 0x0028, 0x0FFF, 0x1FFF, 0x2FFF, 0x37EF4001, 0x0FFF, 0x1FFF, 0x2FFF, 0x37EF4001, 0x0FFF, 0x1FFF, 0x2FFF, 0x37F0, 0x4001, 0x8FA0, 0x9FA0, 0xAFA0, 0xBFA0, 0xC000, 0xAECC, 0x33C3, 0x3CAA, 0x0028, 0x0FFF, 0x1FFF, 0x2FFF, 0x37F0, 0x4001, 0x0FFF, 0x1FFF};
     private byte[] test_data = {
@@ -262,6 +268,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
                 case 101:
                     Toast.makeText(mContext, "连接成功", Toast.LENGTH_SHORT).show();
+                    bt_start.setClickable(true);
+                    break;
+                case 506:
+                    bt_adapter.cancelDiscovery();
                     break;
                 case 10001:
                     Toast.makeText(mContext, "解析到数据", Toast.LENGTH_SHORT).show();
@@ -283,6 +293,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
         mContext = this;
         initView();
@@ -294,6 +306,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         spinner_device = (Spinner) findViewById(R.id.spinner_device);
         bt_start = (Button) findViewById(R.id.bt_start);
         bt_exit = (Button) findViewById(R.id.bt_exit);
+        bt_help = (Button) findViewById(R.id.bt_help);
 
         tv_s1_value = (TextView) findViewById(R.id.tv_s1_value);
         tv_s2_value = (TextView) findViewById(R.id.tv_s2_value);
@@ -320,7 +333,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initData() {
-
+        bt_start.setClickable(false);
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -329,7 +342,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                     1);
         }
-
         dataList = new ArrayList<>();
         deviceList = new ArrayList<>();
         s1_list = new ArrayList<>();
@@ -359,6 +371,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_device.setAdapter(adapter);
 
+        mChart_one.setDescription(null);
+        mChart_two.setDescription(null);
         ArrayList<Entry> datalist = new ArrayList<>();
         datalist.add(new Entry(0, 20));
         LineChartManager.initThridLineChart(mContext, mChart_one, datalist, datalist, datalist);
@@ -369,6 +383,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initListener() {
         bt_start.setOnClickListener(this);
         bt_exit.setOnClickListener(this);
+        bt_help.setOnClickListener(this);
 
         spinner_device.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -385,7 +400,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             Toast.makeText(mContext, "配对中...", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(mContext, "连接中...", Toast.LENGTH_SHORT).show();
-                            ConnectThread connectThread = new ConnectThread(bluetoothDevice);
+                            connectThread = new ConnectThread(bluetoothDevice);
                             connectThread.start();
                         }
                     } catch (Exception e) {
@@ -420,6 +435,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.bt_start:
                 if (!isConnect) {
+                    isFinish = true;
                     s1_list.clear();
                     s2_list.clear();
                     s3_list.clear();
@@ -467,6 +483,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         })
                         .show();
                 break;
+            case R.id.bt_help:
+                new SweetAlertDialog(mContext, SweetAlertDialog.NORMAL_TYPE)
+                        .setTitleText("使用帮助")
+                        .setContentText("随便写点什么")
+                        .setConfirmText("确定");
+                break;
         }
 
     }
@@ -474,7 +496,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mReceiver);
+        try {
+            unregisterReceiver(mReceiver);
+            if (connectedThread != null) {
+                connectedThread.cancel();
+            }
+        } catch (Exception e) {
+
+        }
+
     }
 
     public void checkBT() {
@@ -525,6 +555,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 case -1: {
                     // TODO 用户选择开启 Bluetooth，Bluetooth 会被开启
                     isDiscovering = bt_adapter.startDiscovery();
+                    mHandler.sendEmptyMessageDelayed(506, 10000);
                     mDialog.show();
                     IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
                     filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
@@ -592,7 +623,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         public void run() {
             // Cancel discovery because it will slow down the connection
-            bt_adapter.cancelDiscovery();
+//            bt_adapter.cancelDiscovery();
 
             try {
                 // Connect the device through the socket. This will block
@@ -623,7 +654,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void manageConnectedSocket(BluetoothSocket mmSocket) {
-        ConnectedThread connectedThread = new ConnectedThread(mmSocket);
+        connectedThread = new ConnectedThread(mmSocket);
         connectedThread.start();
     }
 
@@ -762,14 +793,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     s3_list.add(0, s3_value);
                     break;
                 case 3:
-                    a1_value = ((float) 49 / 4095) * (real_value - 2048);
+                    a1_value = ((float) 49 / 2048) * (real_value - 2048);
                     if (a1_list.size() > 200) {
                         a1_list.remove(200);
                     }
                     a1_list.add(0, a1_value);
                     break;
                 case 4:
-                    a2_value = ((float) 49 / 4095) * (real_value - 2048);
+                    a2_value = ((float) 49 / 2048) * (real_value - 2048);
                     if (a2_list.size() > 200) {
                         a2_list.remove(200);
                     }
