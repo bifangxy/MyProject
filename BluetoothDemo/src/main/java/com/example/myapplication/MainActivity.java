@@ -175,6 +175,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private int index = 0;
 
+    private int save_index;
+
     private String fileName;
 
     private String fileContent;
@@ -395,7 +397,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                     1);
         }
-
+        save_index = 0;
 
         dataList = new ArrayList<>();
         deviceList = new ArrayList<>();
@@ -581,7 +583,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                         "Data information:\t" + fileName + "\n" +
                                         "System time:\t" + DateUtils.getYMDHm1(new Date()) + "\n" +
                                         "**FILE HEADER END**\n" +
-                                        "S1\t\t\tS2\t\t\tS3\t\t\tA1\t\t\tA2\t\t\tS1\t\t\tS2\t\t\tS3\t\t\tA1\t\t\tA2\t\t\tS1\t\t\tS2\t\t\tS3\t\t\tA1\t\t\tA2\t\t\tS1_NUM\t\tS2_NUM\t\tS3_NUM\t\tA1_NUM\t\tA2_NUM\n";
+                                        "S1\t\t\tS2\t\t\tS3\t\t\tA1\t\t\tA2\t\t\tS1_NUM\t\tS2_NUM\t\tS3_NUM\t\tA1_NUM\t\tA2_NUM\n";
                             }
                         });
                         builder.show();
@@ -886,12 +888,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         s1_list.remove(200);
                     }
                     s1_list.add(0, s1_value);
-                    if (Math.abs(s1_value) < 10) {
-                        fileContent = fileContent + "0" + String.format("%.5f", s1_value) + "\t";
-                    } else {
-                        fileContent = fileContent + String.format("%.5f", s1_value) + "\t";
+                    if (save_index == 0) {
+                        if (Math.abs(s1_value) < 10) {
+                            fileContent = fileContent + "0" + String.format("%.5f", s1_value) + "\t";
+                        } else {
+                            fileContent = fileContent + String.format("%.5f", s1_value) + "\t";
+                        }
                     }
-
                     break;
                 case 1:
                     s2_value = ((float) 20 / 4095) * real_value;
@@ -899,11 +902,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         s2_list.remove(200);
                     }
                     s2_list.add(0, s2_value);
-                    if (Math.abs(s2_value) < 10) {
-                        fileContent = fileContent + "0" + String.format("%.5f", s2_value) + "\t";
-                    } else {
-                        fileContent = fileContent + String.format("%.5f", s2_value) + "\t";
+                    if (save_index == 0) {
+                        if (Math.abs(s2_value) < 10) {
+                            fileContent = fileContent + "0" + String.format("%.5f", s2_value) + "\t";
+                        } else {
+                            fileContent = fileContent + String.format("%.5f", s2_value) + "\t";
+                        }
                     }
+
 
                     break;
                 case 2:
@@ -912,12 +918,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         s3_list.remove(200);
                     }
                     s3_list.add(0, s3_value);
-                    if (Math.abs(s3_value) < 10) {
-                        fileContent = fileContent + "0" + String.format("%.5f", s3_value) + "\t";
-                    } else {
-                        fileContent = fileContent + String.format("%.5f", s3_value) + "\t";
+                    if (save_index == 0) {
+                        if (Math.abs(s3_value) < 10) {
+                            fileContent = fileContent + "0" + String.format("%.5f", s3_value) + "\t";
+                        } else {
+                            fileContent = fileContent + String.format("%.5f", s3_value) + "\t";
+                        }
                     }
-
 
                     break;
                 case 3:
@@ -926,12 +933,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         a1_list.remove(200);
                     }
                     a1_list.add(0, a1_value);
-                    if (Math.abs(a1_value) < 10) {
-                        fileContent = fileContent + "0" + String.format("%.5f", a1_value) + "\t";
-                    } else {
-                        fileContent = fileContent + String.format("%.5f", a1_value) + "\t";
+                    if (save_index == 0) {
+                        if (Math.abs(a1_value) < 10) {
+                            fileContent = fileContent + "0" + String.format("%.5f", a1_value) + "\t";
+                        } else {
+                            fileContent = fileContent + String.format("%.5f", a1_value) + "\t";
+                        }
                     }
-
                     break;
                 case 4:
                     a2_value = ((float) 49 / 2048) * (real_value - 2048);
@@ -939,12 +947,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         a2_list.remove(200);
                     }
                     a2_list.add(0, a2_value);
-                    if (Math.abs(a2_value) < 10) {
-                        fileContent = fileContent + "0" + String.format("%.5f", a2_value) + "\t";
-                    } else {
-                        fileContent = fileContent + String.format("%.5f", a2_value) + "\t";
+                    if (save_index == 0) {
+                        if (Math.abs(a2_value) < 10) {
+                            fileContent = fileContent + "0" + String.format("%.5f", a2_value) + "\t";
+                        } else {
+                            fileContent = fileContent + String.format("%.5f", a2_value) + "\t";
+                        }
+                        save_index = 1;
                     }
-
                     break;
                 case 8:
                     s1_count = real_value;
@@ -984,6 +994,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
                 case 12:
                     a2_count = real_value;
+                    save_index = 0;
                     if (Math.abs(a2_count) < 10) {
                         fileContent = fileContent + "0" + String.format("%.5f", (float) a2_count) + "\n";
                     } else {
