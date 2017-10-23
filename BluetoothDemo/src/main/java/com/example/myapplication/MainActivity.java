@@ -909,8 +909,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             fileContent = fileContent + String.format("%.5f", s2_value) + "\t";
                         }
                     }
-
-
                     break;
                 case 2:
                     s3_value = ((float) 20 / 4095) * real_value;
