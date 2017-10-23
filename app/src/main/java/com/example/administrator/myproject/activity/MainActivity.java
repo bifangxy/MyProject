@@ -1,16 +1,11 @@
 package com.example.administrator.myproject.activity;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
 
-import com.ashokvarma.bottomnavigation.BadgeItem;
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.example.administrator.myproject.R;
@@ -19,11 +14,8 @@ import com.example.administrator.myproject.fragment.FragmentOne;
 import com.example.administrator.myproject.fragment.FragmentThree;
 import com.example.administrator.myproject.fragment.FragmentTwo;
 
-import org.xutils.common.util.LogUtil;
 import org.xutils.view.annotation.ContentView;
-import org.xutils.view.annotation.Event;
 import org.xutils.view.annotation.ViewInject;
-import org.xutils.x;
 
 import java.util.ArrayList;
 import java.util.List;

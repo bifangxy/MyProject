@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.administrator.myproject.widget.KPSwitchRootLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_message"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <include layout="@layout/layout_send_message_bar" />
+
+    <com.example.administrator.myproject.widget.KPSwitchPanelLinearLayout
+        android:id="@+id/panel_root"
+        style="@style/Panel"
+        android:visibility="gone">
+
+        <include
+            android:id="@+id/sub_panel_one"
+            layout="@layout/merge_panel_content" />
+
+        <include
+            android:id="@+id/sub_panel_two"
+            layout="@layout/merge_panel_content_two" />
+    </com.example.administrator.myproject.widget.KPSwitchPanelLinearLayout>
+
+</com.example.administrator.myproject.widget.KPSwitchRootLinearLayout>
