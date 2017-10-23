@@ -577,13 +577,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 fileName = inputServer.getText().toString() + ".txt";
                                 isSave = true;
                                 bt_save_data.setText("停止保存");
-                                fileContent = "Sensor datalog file\t\t\n" +
-                                        "Version:\t\n" +
-                                        "hostname:\t" + bluetoothDevice.getName() + "\n" +
-                                        "Data information:\t" + fileName + "\n" +
-                                        "System time:\t" + DateUtils.getYMDHm1(new Date()) + "\n" +
-                                        "**FILE HEADER END**\n" +
-                                        "S1\t\t\tS2\t\t\tS3\t\t\tA1\t\t\tA2\t\t\tS1_NUM\t\tS2_NUM\t\tS3_NUM\t\tA1_NUM\t\tA2_NUM\n";
+                                fileContent = "Sensor datalog file\t\t\r\n" +
+                                        "Version:\t\r\n" +
+                                        "hostname:\t" + bluetoothDevice.getName() + "\r\n" +
+                                        "Data information:\t" + fileName + "\r\n" +
+                                        "System time:\t" + DateUtils.getYMDHm1(new Date()) + "\r\n" +
+                                        "**FILE HEADER END**\r\n" +
+                                        "S1\t\t\tS2\t\t\tS3\t\t\tA1\t\t\tA2\t\t\tS1_NUM\t\tS2_NUM\t\tS3_NUM\t\tA1_NUM\t\tA2_NUM\r\n";
                             }
                         });
                         builder.show();
@@ -889,11 +889,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     s1_list.add(0, s1_value);
                     if (save_index == 0) {
-                        if (Math.abs(s1_value) < 10) {
-                            fileContent = fileContent + "0" + String.format("%.5f", s1_value) + "\t";
-                        } else {
-                            fileContent = fileContent + String.format("%.5f", s1_value) + "\t";
-                        }
+//                        if (Math.abs(s1_value) < 10) {
+//                            fileContent = fileContent + "0" + String.format("%.5f", s1_value) + "\t";
+//                        } else {
+                        fileContent = fileContent + String.format("%.5f", s1_value) + "\t";
+//                        }
                     }
                     break;
                 case 1:
@@ -903,11 +903,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     s2_list.add(0, s2_value);
                     if (save_index == 0) {
-                        if (Math.abs(s2_value) < 10) {
-                            fileContent = fileContent + "0" + String.format("%.5f", s2_value) + "\t";
-                        } else {
-                            fileContent = fileContent + String.format("%.5f", s2_value) + "\t";
-                        }
+//                        if (Math.abs(s2_value) < 10) {
+//                            fileContent = fileContent + "0" + String.format("%.5f", s2_value) + "\t";
+//                        } else {
+                        fileContent = fileContent + String.format("%.5f", s2_value) + "\t";
+//                        }
                     }
                     break;
                 case 2:
@@ -917,11 +917,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     s3_list.add(0, s3_value);
                     if (save_index == 0) {
-                        if (Math.abs(s3_value) < 10) {
-                            fileContent = fileContent + "0" + String.format("%.5f", s3_value) + "\t";
-                        } else {
-                            fileContent = fileContent + String.format("%.5f", s3_value) + "\t";
-                        }
+//                        if (Math.abs(s3_value) < 10) {
+//                            fileContent = fileContent + "0" + String.format("%.5f", s3_value) + "\t";
+//                        } else {
+                        fileContent = fileContent + String.format("%.5f", s3_value) + "\t";
+//                        }
                     }
 
                     break;
@@ -932,11 +932,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     a1_list.add(0, a1_value);
                     if (save_index == 0) {
-                        if (Math.abs(a1_value) < 10) {
-                            fileContent = fileContent + "0" + String.format("%.5f", a1_value) + "\t";
-                        } else {
-                            fileContent = fileContent + String.format("%.5f", a1_value) + "\t";
-                        }
+//                        if (Math.abs(a1_value) < 10) {
+//                            fileContent = fileContent + "0" + String.format("%.5f", a1_value) + "\t";
+//                        } else {
+                        fileContent = fileContent + String.format("%.5f", a1_value) + "\t";
+//                        }
                     }
                     break;
                 case 4:
@@ -946,58 +946,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     a2_list.add(0, a2_value);
                     if (save_index == 0) {
-                        if (Math.abs(a2_value) < 10) {
-                            fileContent = fileContent + "0" + String.format("%.5f", a2_value) + "\t";
-                        } else {
-                            fileContent = fileContent + String.format("%.5f", a2_value) + "\t";
-                        }
+//                        if (Math.abs(a2_value) < 10) {
+//                            fileContent = fileContent + "0" + String.format("%.5f", a2_value) + "\t";
+//                        } else {
+                        fileContent = fileContent + String.format("%.5f", a2_value) + "\t";
+//                        }
                         save_index = 1;
                     }
                     break;
                 case 8:
                     s1_count = real_value;
-                    if (Math.abs(s1_count) < 10) {
-                        fileContent = fileContent + "0" + String.format("%.5f", (float) s1_count) + "\t";
-                    } else {
-                        fileContent = fileContent + String.format("%.5f", (float) s1_count) + "\t";
-                    }
+//                    if (Math.abs(s1_count) < 10) {
+//                        fileContent = fileContent + "0" + String.format("%.5f", (float) s1_count) + "\t";
+//                    } else {
+                    fileContent = fileContent + String.format("%.5f", (float) s1_count) + "\t";
+//                    }
 
                     break;
                 case 9:
                     s2_count = real_value;
-                    if (Math.abs(s2_count) < 10) {
-                        fileContent = fileContent + "0" + String.format("%.5f", (float) s2_count) + "\t";
-                    } else {
-                        fileContent = fileContent + String.format("%.5f", (float) s2_count) + "\t";
-                    }
+//                    if (Math.abs(s2_count) < 10) {
+//                        fileContent = fileContent + "0" + String.format("%.5f", (float) s2_count) + "\t";
+//                    } else {
+                    fileContent = fileContent + String.format("%.5f", (float) s2_count) + "\t";
+//                    }
 
                     break;
                 case 10:
                     s3_count = real_value;
-                    if (Math.abs(s3_count) < 10) {
-                        fileContent = fileContent + "0" + String.format("%.5f", (float) s3_count) + "\t";
-                    } else {
-                        fileContent = fileContent + String.format("%.5f", (float) s3_count) + "\t";
-                    }
+//                    if (Math.abs(s3_count) < 10) {
+//                        fileContent = fileContent + "0" + String.format("%.5f", (float) s3_count) + "\t";
+//                    } else {
+                    fileContent = fileContent + String.format("%.5f", (float) s3_count) + "\t";
+//                    }
 
                     break;
                 case 11:
                     a1_count = real_value;
-                    if (Math.abs(a1_count) < 10) {
-                        fileContent = fileContent + "0" + String.format("%.5f", (float) a1_count) + "\t";
-                    } else {
-                        fileContent = fileContent + String.format("%.5f", (float) a1_count) + "\t";
-                    }
+//                    if (Math.abs(a1_count) < 10) {
+//                        fileContent = fileContent + "0" + String.format("%.5f", (float) a1_count) + "\t";
+//                    } else {
+                    fileContent = fileContent + String.format("%.5f", (float) a1_count) + "\t";
+//                    }
 
                     break;
                 case 12:
                     a2_count = real_value;
                     save_index = 0;
-                    if (Math.abs(a2_count) < 10) {
-                        fileContent = fileContent + "0" + String.format("%.5f", (float) a2_count) + "\n";
-                    } else {
-                        fileContent = fileContent + String.format("%.5f", (float) a2_count) + "\n";
-                    }
+//                    if (Math.abs(a2_count) < 10) {
+//                        fileContent = fileContent + "0" + String.format("%.5f", (float) a2_count) + "\n";
+//                    } else {
+                    fileContent = fileContent + String.format("%.5f", (float) a2_count) + "\r\n";
+//                    }
 
                     break;
                 default:
