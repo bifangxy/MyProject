@@ -308,4 +308,5 @@ public class EmotionUtils {
         EMOTION_STATIC_MAP.put("[手枪]", R.mipmap.emotion_shouqiang);
         EMOTION_STATIC_MAP.put("[青蛙]", R.mipmap.emotion_qingwa);
     }
+
 }

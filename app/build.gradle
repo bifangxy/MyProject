@@ -30,4 +30,6 @@ dependencies {
     compile 'org.xutils:xutils:3.5.0'
     compile 'com.ashokvarma.android:bottom-navigation-bar:1.4.1'
     compile 'com.jude:rollviewpager:1.4.6'
+    compile 'com.jude:easyrecyclerview:4.2.3'
+    compile 'org.greenrobot:eventbus:3.0.0'
 }
