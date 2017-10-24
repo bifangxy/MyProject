@@ -18,13 +18,14 @@
         style="@style/Panel"
         android:visibility="gone">
 
-        <include
-            android:id="@+id/sub_panel_one"
-            layout="@layout/merge_panel_content" />
 
         <include
-            android:id="@+id/sub_panel_two"
+            android:id="@+id/view_emotion"
             layout="@layout/merge_panel_content_two" />
+
+        <include
+            android:id="@+id/view_more"
+            layout="@layout/merge_panel_content" />
     </com.example.administrator.myproject.widget.KPSwitchPanelLinearLayout>
 
 </com.example.administrator.myproject.widget.KPSwitchRootLinearLayout>

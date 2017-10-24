@@ -22,9 +22,11 @@ public class ChatAdapter extends RecyclerArrayAdapter<MessageInfo> {
 
     private onItemClickListener onItemClickListener;
     public Handler handler;
+    private Context mContext;
 
     public ChatAdapter(Context context) {
         super(context);
+        mContext = context;
         handler = new Handler();
     }
 
@@ -33,10 +35,10 @@ public class ChatAdapter extends RecyclerArrayAdapter<MessageInfo> {
         BaseViewHolder viewHolder = null;
         switch (viewType) {
             case Constants.CHAT_ITEM_TYPE_LEFT:
-                viewHolder = new ChatAcceptViewHolder(parent, onItemClickListener, handler);
+                viewHolder = new ChatAcceptViewHolder(parent, onItemClickListener, handler, mContext);
                 break;
             case Constants.CHAT_ITEM_TYPE_RIGHT:
-                viewHolder = new ChatSendViewHolder(parent, onItemClickListener, handler);
+                viewHolder = new ChatSendViewHolder(parent, onItemClickListener, handler, mContext);
                 break;
         }
         return viewHolder;

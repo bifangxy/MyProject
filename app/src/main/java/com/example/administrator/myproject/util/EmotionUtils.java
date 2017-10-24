@@ -309,4 +309,6 @@ public class EmotionUtils {
         EMOTION_STATIC_MAP.put("[青蛙]", R.mipmap.emotion_qingwa);
     }
 
+
+
 }

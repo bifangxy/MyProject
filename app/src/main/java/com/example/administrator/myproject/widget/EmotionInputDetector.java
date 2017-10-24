@@ -7,8 +7,6 @@ import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Build;
 import android.support.v4.view.ViewPager;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;

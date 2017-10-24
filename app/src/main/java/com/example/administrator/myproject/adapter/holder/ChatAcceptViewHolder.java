@@ -1,5 +1,6 @@
 package com.example.administrator.myproject.adapter.holder;
 
+import android.content.Context;
 import android.os.Handler;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import com.example.administrator.myproject.data.MessageInfo;
 import com.example.administrator.myproject.util.Utils;
 import com.example.administrator.myproject.views.GifTextView;
 import com.jude.easyrecyclerview.adapter.BaseViewHolder;
+import com.squareup.picasso.Picasso;
 
 
 /**
@@ -30,11 +32,13 @@ public class ChatAcceptViewHolder extends BaseViewHolder<MessageInfo> {
     private TextView chatItemVoiceTime;
     private ChatAdapter.onItemClickListener onItemClickListener;
     private Handler handler;
+    private Context mContext;
 
-    public ChatAcceptViewHolder(ViewGroup parent, ChatAdapter.onItemClickListener onItemClickListener, Handler handler) {
+    public ChatAcceptViewHolder(ViewGroup parent, ChatAdapter.onItemClickListener onItemClickListener, Handler handler, Context context) {
         super(parent, R.layout.item_chat_accept);
         this.onItemClickListener = onItemClickListener;
         this.handler = handler;
+        this.mContext = context;
         chatItemDate = $(R.id.chat_item_date);
         chatItemHeader = $(R.id.chat_item_header);
         chatItemContentText = $(R.id.chat_item_content_text);
@@ -54,6 +58,7 @@ public class ChatAcceptViewHolder extends BaseViewHolder<MessageInfo> {
                 onItemClickListener.onHeaderClick(getDataPosition());
             }
         });
+        Picasso.with(mContext).load(data.getHeader()).into(chatItemHeader);
         if (data.getContent() != null) {
             chatItemContentText.setSpanText(handler, data.getContent(), true);
             chatItemVoice.setVisibility(View.GONE);

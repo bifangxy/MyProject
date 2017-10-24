@@ -1,5 +1,6 @@
 package com.example.administrator.myproject.adapter.holder;
 
+import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.administrator.myproject.MyApplication;
 import com.example.administrator.myproject.R;
 import com.example.administrator.myproject.adapter.ChatAdapter;
 import com.example.administrator.myproject.data.MessageInfo;
@@ -16,6 +18,9 @@ import com.example.administrator.myproject.util.Constants;
 import com.example.administrator.myproject.util.Utils;
 import com.example.administrator.myproject.views.GifTextView;
 import com.jude.easyrecyclerview.adapter.BaseViewHolder;
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 
 
 /**
@@ -35,11 +40,13 @@ public class ChatSendViewHolder extends BaseViewHolder<MessageInfo> {
     TextView chatItemVoiceTime;
     private ChatAdapter.onItemClickListener onItemClickListener;
     private Handler handler;
+    private Context mContext;
 
-    public ChatSendViewHolder(ViewGroup parent, ChatAdapter.onItemClickListener onItemClickListener, Handler handler) {
+    public ChatSendViewHolder(ViewGroup parent, ChatAdapter.onItemClickListener onItemClickListener, Handler handler, Context context) {
         super(parent, R.layout.item_chat_send);
         this.onItemClickListener = onItemClickListener;
         this.handler = handler;
+        this.mContext = context;
         chatItemDate = $(R.id.chat_item_date);
         chatItemHeader = $(R.id.chat_item_header);
         chatItemContentText = $(R.id.chat_item_content_text);
@@ -62,6 +69,7 @@ public class ChatSendViewHolder extends BaseViewHolder<MessageInfo> {
                 onItemClickListener.onHeaderClick(getDataPosition());
             }
         });
+        Picasso.with(mContext).load(data.getHeader()).into(chatItemHeader);
         if (data.getContent() != null) {
             chatItemContentText.setSpanText(handler, data.getContent(), true);
             chatItemVoice.setVisibility(View.GONE);
@@ -75,6 +83,9 @@ public class ChatSendViewHolder extends BaseViewHolder<MessageInfo> {
             chatItemVoiceTime.setVisibility(View.GONE);
             chatItemContentText.setVisibility(View.GONE);
             chatItemContentImage.setVisibility(View.VISIBLE);
+            File file = new File(data.getImageUrl());
+            Picasso.with(mContext).load(file).into(chatItemContentImage);
+//            Picasso.with(getContext()).load(data.getImageUrl()).into(chatItemContentImage);
             chatItemContentImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
